@@ -14,12 +14,16 @@ conn = Bunny.new
 conn.start
 
 ch = conn.create_channel
-q  = ch.queue('bunny.examples.hello_world', auto_delete: true)
+q  = ch.queue('bunny.examples.hello_world',
+              durable: true,
+              exclusive: false,
+              autoDelete: false,
+              arguments: nil)
 x  = ch.default_exchange
 
-q.subscribe do |_delivery_info, _metadata, payload|
-  puts "Received #{payload}"
-end
+# q.subscribe do |_delivery_info, _metadata, payload|
+#   puts "Received #{payload}"
+# end
 
 x.publish('Hello!', routing_key: q.name)
 puts "Routing_key: #{q.name}"
